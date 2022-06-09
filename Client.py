@@ -77,14 +77,26 @@ class Client:
 	def exitClient(self):
 		"""Teardown button handler."""
 	#TODO
+		self.sendRtspRequest(self.TEARDOWN)
+		self.master.destroy()
+
+		if self.requestSent != -1:
+			os.remove(CACHE_FILE_NAME + str(self.sessionId) + CACHE_FILE_EXT)
 
 	def pauseMovie(self):
 		"""Pause button handler."""
 	#TODO
+		if self.state == self.PLAYING:
+			self.sendRtspRequest(self.PAUSE)
 	
 	def playMovie(self):
 		"""Play button handler."""
 	#TODO
+		if self.state == self.READY:
+			threading.Thread(target=self.listenRtp).start()
+			self.playEvent = threading.Event()
+			self.playEvent.clear()
+			self.sendRtspRequest(self.PLAY)
 	
 	def listenRtp(self):		
 		"""Listen for RTP packets."""
@@ -133,3 +145,6 @@ class Client:
 	def handler(self):
 		"""Handler on explicitly closing the GUI window."""
 		#TODO
+		self.pauseMovie()
+		if tkinter.messagebox.askokcancel("Quit?", "Are you sure you want to quit?"):
+			self.exitClient()
