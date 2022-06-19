@@ -385,3 +385,5 @@ class Client:
 		self.pauseMovie()
 		if tkinter.messagebox.askokcancel("Quit?", "Are you sure you want to quit?"):
 			self.exitClient()
+
+		
